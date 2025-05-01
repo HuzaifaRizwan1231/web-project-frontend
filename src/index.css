@@ -33,3 +33,8 @@ button{
     background-image: url("/public/images/cover-image.jpg");
     background-size: cover;
 }
+
+input:-webkit-autofill {
+    transition: background-color 100000s ease-in-out 0s, color 100000s ease-in-out 0s;
+  }
+  

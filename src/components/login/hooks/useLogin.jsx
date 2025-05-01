@@ -5,6 +5,7 @@ import { getParsedErrors } from "../../../utils/utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../../../redux/features/user/userSlice";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export const useLogin = () => {
   // states
@@ -41,6 +42,7 @@ export const useLogin = () => {
 
     if (response.success) {
       dispatch(setUser(response.message.user));
+      toast.success("Logged In");
       navigate("/");
     } else {
       console.error(response);

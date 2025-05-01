@@ -1,6 +1,7 @@
 import React from "react";
 import { useLogin } from "../components/login/hooks/useLogin";
 import InputField from "../components/ui/InputField";
+import { FaSpinner } from "react-icons/fa";
 
 const Login = () => {
   const { formData, handleChange, handleLogin, loading, errors } = useLogin();
@@ -64,7 +65,14 @@ const Login = () => {
 
               <div className="mb-5">Forgot your password?</div>
 
-              <button type="submit" disabled={loading} className="primary-btn">
+              <button
+                type="submit"
+                disabled={loading}
+                className="primary-btn flex items-center justify-center gap-2"
+              >
+                {loading && (
+                  <FaSpinner className="animate-spin text-white" size={15} />
+                )}
                 Sign In
               </button>
             </form>
