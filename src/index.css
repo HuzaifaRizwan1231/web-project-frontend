@@ -4,6 +4,7 @@
     --color-default: #1e40af ;
     --color-light-primary: #3b82f6;
     --color-dark-primary: #161616;
+    --color-dark-secondary: #1e1e1e;
     --color-button-primary: #02a6a6;
     --color-text-primary: #9d9c9b;
   }
@@ -24,7 +25,11 @@ button{
     @apply w-full p-4 bg-black text-white rounded-md
 }
 
-.primary-input:focus{
+.primary-input-small{
+    @apply w-full p-2 bg-black text-white rounded-md
+}
+
+.primary-input:focus, .primary-input-small:focus{
     outline: unset;
     @apply outline-button-primary outline-1
 }
