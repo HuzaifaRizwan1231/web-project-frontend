@@ -1,8 +1,9 @@
 import React from "react";
 import { useLogin } from "../components/login/hooks/useLogin";
+import InputField from "../components/ui/InputField";
 
 const Login = () => {
-  const { formData, handleChange, handleLogin, loading } = useLogin();
+  const { formData, handleChange, handleLogin, loading, errors } = useLogin();
   const { email, password } = formData;
   return (
     <>
@@ -30,23 +31,33 @@ const Login = () => {
             >
               <div className="flex flex-col gap-4">
                 <div>
-                  <input
-                    type="email"
-                    name="email"
-                    value={email}
-                    className="primary-input"
-                    placeholder="Email"
-                    onChange={handleChange}
+                  <InputField
+                    input={
+                      <input
+                        type="email"
+                        name="email"
+                        value={email}
+                        className="primary-input"
+                        placeholder="Email"
+                        onChange={handleChange}
+                      />
+                    }
+                    error={errors.email}
                   />
                 </div>
                 <div>
-                  <input
-                    type="password"
-                    name="password"
-                    value={password}
-                    className="primary-input"
-                    placeholder="Password"
-                    onChange={handleChange}
+                  <InputField
+                    input={
+                      <input
+                        type="password"
+                        name="password"
+                        value={password}
+                        className="primary-input"
+                        placeholder="Password"
+                        onChange={handleChange}
+                      />
+                    }
+                    error={errors.password}
                   />
                 </div>
               </div>

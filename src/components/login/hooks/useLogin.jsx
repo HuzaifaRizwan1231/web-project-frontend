@@ -1,5 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { loginApiCall } from "../../../api/auth.api";
+import { loginFormSchema } from "../../../zod/schema";
+import { getParsedErrors } from "../../../utils/utils";
+import { useDispatch, useSelector } from "react-redux";
+import { setUser } from "../../../redux/features/user/userSlice";
+import { useNavigate } from "react-router-dom";
 
 export const useLogin = () => {
   // states
@@ -8,6 +13,9 @@ export const useLogin = () => {
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({
@@ -19,19 +27,32 @@ export const useLogin = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrors({});
 
-    // Validation
+    // Zod Validation
+    const result = loginFormSchema.safeParse(formData);
+    if (!result.success) {
+      setErrors(getParsedErrors(result));
+      return;
+    }
 
     // Api Call
-    const response = await loginApiCall();
+    const response = await loginApiCall(formData);
 
     if (response.success) {
-      console.log("Success");
+      dispatch(setUser(response.message.user));
+      navigate("/");
     } else {
-      console.error("Error");
+      console.error(response);
+
+      // setting the error to the last input form
+      setErrors({
+        ...errors,
+        password: response.message,
+      });
     }
 
     setLoading(false);
   };
-  return { formData, handleChange, handleLogin, loading };
+  return { formData, handleChange, handleLogin, loading, errors };
 };
