@@ -1,11 +1,26 @@
 import "./App.css";
+import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
     <>
-      <div className="text-center">Hello</div>
-      <Login />
+      <Router>
+        <Routes>
+          <Route path="/" element={<></>} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Login />} />
+          <Route
+            path="/editor"
+            element={
+              <ProtectedRoute>
+                <>Editor</>
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
     </>
   );
 }
