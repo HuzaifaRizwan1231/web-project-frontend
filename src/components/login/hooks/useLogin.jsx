@@ -34,6 +34,7 @@ export const useLogin = () => {
     const result = loginFormSchema.safeParse(formData);
     if (!result.success) {
       setErrors(getParsedErrors(result));
+      setLoading(false);
       return;
     }
 

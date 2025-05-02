@@ -13,7 +13,7 @@ const ProtectedRoute = () => {
 
   const getUser = async () => {
     const response = await {
-      success: false,
+      success: true,
       data: {
         user: {
           username: "b1",
