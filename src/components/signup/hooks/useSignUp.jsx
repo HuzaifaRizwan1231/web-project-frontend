@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { signUpApiCall } from "../../../api/auth.api";
+import { signUpFormSchema } from "../../../zod/schema";
+import { getParsedErrors } from "../../../utils/utils";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export const useSignUp = () => {
   const [formData, setFormData] = useState({
@@ -11,6 +15,8 @@ export const useSignUp = () => {
   });
 
   const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -30,16 +36,36 @@ export const useSignUp = () => {
   const handleSignUp = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setErrors({});
 
-    const response = await signUpApiCall();
+    const result = signUpFormSchema.safeParse(formData);
+    if (!result.success) {
+      setErrors(getParsedErrors(result));
+      setLoading(false);
+      return;
+    }
 
-    if (response.success) {
-      console.log("success");
+    const data = new FormData();
+    data.append("username", formData.username);
+    data.append("email", formData.email);
+    data.append("password", formData.password);
+    data.append("profileImage", formData.profileImage);
+
+    const response = await signUpApiCall(data);
+
+    if (response.data?.success) {
+      toast.success("Signed Up Successfully");
+      navigate("/login");
     } else {
-      console.log("Error");
+      // Extracts the error type from the message to show it using zod.
+      const errorType = response.message.split(" ")[0].toLowerCase();
+      setLoading(false);
+      setErrors({
+        [errorType]: response.message,
+      });
     }
 
     setLoading(false);
   };
-  return { formData, handleChange, handleSignUp, loading };
+  return { formData, handleChange, handleSignUp, loading, errors };
 };
