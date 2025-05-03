@@ -3,6 +3,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import Editor from "./pages/Editor";
 import Login from "./pages/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Settings from "./pages/Settings";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
           <Route path="/" element={<></>} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Login />} />
+          <Route path="/settings" element={<Settings />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/editor" element={<Editor />} />
           </Route>
