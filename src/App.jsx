@@ -1,4 +1,3 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Editor from "./pages/Editor";
@@ -14,7 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<></>} />
           <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
           <Route path="/settings" element={<Settings />} />
           <Route element={<ProtectedRoute />}>
             <Route path="/editor" element={<Editor />} />

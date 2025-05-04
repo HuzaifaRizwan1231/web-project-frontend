@@ -102,7 +102,7 @@ const Signup = () => {
                 <div></div>
               </div>
 
-              <div className="mb-5">
+              <div className="mb-5 flex gap-2 justify-center">
                 Already have an account?
                 <b
                   className="hover:button-primary cursor-pointer"
@@ -120,7 +120,7 @@ const Signup = () => {
                 {loading && (
                   <FaSpinner className="animate-spin text-white" size={15} />
                 )}
-                Sign In
+                Sign Up
               </button>
             </form>
           </div>

@@ -2,6 +2,7 @@ import React from "react";
 import { useLogin } from "../components/login/hooks/useLogin";
 import InputField from "../components/ui/InputField";
 import { FaSpinner } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const { formData, handleChange, handleLogin, loading, errors } = useLogin();
@@ -64,6 +65,16 @@ const Login = () => {
               </div>
 
               <div className="mb-5">Forgot your password?</div>
+
+              <div className="mb-5 flex gap-2 justify-center">
+                Don't have an account?
+                <Link
+                  to={"/signup"}
+                  className="hover:button-primary cursor-pointer font-bold"
+                >
+                  Signup
+                </Link>
+              </div>
 
               <button
                 type="submit"
