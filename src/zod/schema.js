@@ -50,3 +50,8 @@ export const signUpFormSchema = z
       path: ["confirmPassword"],
     }
   );
+
+export const loginFormSchema = z.object({
+  email: z.string().email("Invalid email address"),
+  password: z.string().nonempty("Please enter password"),
+});
