@@ -1,7 +1,9 @@
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Editor from "./pages/Editor";
 import Login from "./pages/Login";
+import Signup from "./pages/Signup";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Settings from "./pages/Settings";
 
