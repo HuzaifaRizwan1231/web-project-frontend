@@ -42,7 +42,7 @@ export const useLogin = () => {
     const response = await loginApiCall(formData);
 
     if (response.success) {
-      dispatch(setUser(response.message.user));
+      dispatch(setUser(response.data));
       toast.success("Logged In");
       navigate("/");
     } else {
