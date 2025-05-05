@@ -4,6 +4,8 @@ import { signUpFormSchema } from "../../../zod/schema";
 import { getParsedErrors } from "../../../utils/utils";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../../redux/features/user/userSlice.js";
 
 export const useSignUp = () => {
   const [formData, setFormData] = useState({
@@ -16,6 +18,7 @@ export const useSignUp = () => {
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -54,8 +57,9 @@ export const useSignUp = () => {
     const response = await signUpApiCall(data);
 
     if (response.data?.success) {
+      dispatch(setUser(response.data.data));
       toast.success("Signed Up Successfully");
-      navigate("/login");
+      navigate("/");
     } else {
       // Extracts the error type from the message to show it using zod.
       const errorType = response.message.split(" ")[0].toLowerCase();
