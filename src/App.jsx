@@ -4,13 +4,14 @@ import Editor from "./pages/Editor";
 import Login from "./pages/Login";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Settings from "./pages/Settings";
+import Navbar from "./pages/Navbar";
 
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<></>} />
+          <Route path="/" element={<Navbar />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Login />} />
           <Route path="/settings" element={<Settings />} />

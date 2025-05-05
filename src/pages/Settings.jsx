@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { FaSpinner } from "react-icons/fa";
 import Header from "../components/settings/Header";
 
@@ -9,35 +9,16 @@ const Settings = () => {
     profilePic: "/placeholder.svg?height=100&width=100",
   });
 
-  const [isEditing, setIsEditing] = useState({
-    name: false,
-    email: false,
+  const [formErrors, setFormErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [passwords, setPasswords] = useState({
+    oldPassword: "",
+    newPassword: "",
+    confirmPassword: "",
   });
 
-  const [formErrors, setFormErrors] = useState({}); // holds frontend + backend errors
-  const [isLoading, setIsLoading] = useState(false); // simulate backend request
-
-  const nameInputRef = useRef(null);
-  const emailInputRef = useRef(null);
   const fileInputRef = useRef(null);
-
-  useEffect(() => {
-    if (isEditing.name) nameInputRef.current?.focus();
-    if (isEditing.email) emailInputRef.current?.focus();
-  }, [isEditing]);
-
-  const toggleEdit = (field) => {
-    setFormErrors({}); // clear errors when editing toggled
-    setIsEditing((prev) => ({
-      name: field === "name" ? !prev.name : false,
-      email: field === "email" ? !prev.email : false,
-    }));
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value }));
-  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -54,14 +35,23 @@ const Settings = () => {
     fileInputRef.current?.click();
   };
 
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+    setPasswords((prev) => ({ ...prev, [name]: value }));
+  };
+
   const validateForm = () => {
     const errors = {};
-    if (!user.name.trim()) errors.name = "Name is required.";
-    if (!user.email.trim()) {
-      errors.email = "Email is required.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(user.email)) {
-      errors.email = "Email is invalid.";
-    }
+    const { oldPassword, newPassword, confirmPassword } = passwords;
+
+    if (!oldPassword) errors.oldPassword = "Old password is required.";
+    if (!newPassword) errors.newPassword = "New password is required.";
+    else if (newPassword.length < 6)
+      errors.newPassword = "Password must be at least 6 characters.";
+
+    if (newPassword !== confirmPassword)
+      errors.confirmPassword = "Passwords do not match.";
+
     return errors;
   };
 
@@ -75,12 +65,15 @@ const Settings = () => {
     try {
       setIsLoading(true);
       setFormErrors({});
-      // Simulate API call
-      const res = await mockSaveToBackend(user);
-      console.log("Saved user data:", res);
-      setIsEditing({ name: false, email: false });
+      const res = await mockSaveToBackend(passwords);
+      console.log("Password updated successfully:", res);
+      alert("Password updated!");
+      setPasswords({
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
+      });
     } catch (err) {
-      // Assume backend sends { errors: { name: '...', email: '...' } }
       if (err?.errors) {
         setFormErrors(err.errors);
       } else {
@@ -92,16 +85,15 @@ const Settings = () => {
   };
 
   // Mock backend function
-  const mockSaveToBackend = (user) => {
+  const mockSaveToBackend = (passwords) => {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
-        // Simulate error from backend
-        if (user.email === "taken@example.com") {
+        if (passwords.oldPassword !== "correct-old-password") {
           reject({
-            errors: { email: "This email is already in use." },
+            errors: { oldPassword: "Old password is incorrect." },
           });
         } else {
-          resolve(user);
+          resolve(passwords);
         }
       }, 1000);
     });
@@ -112,150 +104,134 @@ const Settings = () => {
       <Header />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-3xl font-bold mb-8 text-white">Account Settings</h1>
-        <div className="max-w-3xl mx-auto">
-          <div className="space-y-8">
-            {/* Profile Picture */}
-            <div className="bg-dark-secondary rounded-lg overflow-hidden">
-              <div className="p-6 border-b border-gray-800">
-                <h2 className="text-xl font-semibold text-white">
-                  Profile Picture
-                </h2>
-                <p className="text-text-primary text-sm mt-1">
-                  Update your profile image
-                </p>
-              </div>
-              <div className="p-6 flex flex-col items-center">
-                <div className="relative mb-6 group">
-                  <div className="w-32 h-32 rounded-full overflow-hidden bg-white flex items-center justify-center">
-                    {user.profilePic ? (
-                      <img
-                        src={user.profilePic}
-                        alt={user.name}
-                        width={128}
-                        height={128}
-                        className="object-cover w-full h-full"
-                      />
-                    ) : (
-                      <span className="text-white text-2xl font-medium">
-                        {user.name}
-                      </span>
-                    )}
-                  </div>
+        <div className="max-w-3xl mx-auto space-y-8">
+          {/* Profile Picture */}
+          <div className="bg-dark-secondary rounded-lg overflow-hidden">
+            <div className="p-6 border-b border-gray-800">
+              <h2 className="text-xl font-semibold text-white">
+                Profile Picture
+              </h2>
+              <p className="text-text-primary text-sm mt-1">
+                Update your profile image
+              </p>
+            </div>
+            <div className="p-6 flex flex-col items-center">
+              <div className="relative mb-6 group">
+                <div className="w-32 h-32 rounded-full overflow-hidden bg-white flex items-center justify-center">
+                  <img
+                    src={user.profilePic}
+                    alt={user.name}
+                    width={128}
+                    height={128}
+                    className="object-cover w-full h-full"
+                  />
                 </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  className="hidden"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                />
-                <button
-                  className="bg-button-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors"
-                  onClick={handleChangePicture}
-                >
-                  Change Picture
-                </button>
+              </div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleFileChange}
+              />
+              <button
+                className="bg-button-primary text-white px-4 py-2 rounded-md hover:bg-opacity-90 transition-colors"
+                onClick={handleChangePicture}
+              >
+                Change Picture
+              </button>
+            </div>
+          </div>
+
+          {/* Personal Info (read-only) */}
+          <div className="bg-dark-secondary rounded-lg overflow-hidden">
+            <div className="p-6 border-b border-gray-800">
+              <h2 className="text-xl font-semibold text-white">
+                Personal Information
+              </h2>
+            </div>
+            <div className="p-6 space-y-6">
+              <div>
+                <label className="text-sm font-medium text-white">Name</label>
+                <div className="p-4 bg-dark-primary rounded-md text-white">
+                  {user.name}
+                </div>
+              </div>
+              <div>
+                <label className="text-sm font-medium text-white">Email</label>
+                <div className="p-4 bg-dark-primary rounded-md text-white">
+                  {user.email}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Personal Info */}
-          <div className="mt-8 space-y-8">
-            <div className="bg-dark-secondary rounded-lg overflow-hidden">
-              <div className="p-6 border-b border-gray-800">
-                <h2 className="text-xl font-semibold text-white">
-                  Personal Information
-                </h2>
-                <p className="text-text-primary text-sm mt-1">
-                  Update your personal details
-                </p>
-              </div>
-              <div className="p-6 space-y-6">
-                {/* Name Field */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-white">
-                      Name
-                    </label>
-                    <button
-                      className="h-8 px-2 text-text-primary hover:text-white transition-colors !bg-transparent"
-                      onClick={() => toggleEdit("name")}
-                    >
-                      {isEditing.name ? "Cancel" : "Edit"}
-                    </button>
-                  </div>
-                  {isEditing.name ? (
-                    <>
-                      <input
-                        ref={nameInputRef}
-                        type="text"
-                        name="name"
-                        value={user.name}
-                        onChange={handleInputChange}
-                        className="primary-input !bg-dark-primary"
-                        placeholder="Enter your name"
-                      />
-                      {formErrors.name && (
-                        <p className="text-red-500 text-sm">
-                          {formErrors.name}
-                        </p>
-                      )}
-                    </>
-                  ) : (
-                    <div className="flex items-center space-x-2 p-4 bg-dark-primary rounded-md">
-                      <span className="text-white">{user.name}</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Email Field */}
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <label className="text-sm font-medium text-white">
-                      Email
-                    </label>
-                    <button
-                      className="h-8 px-2 text-text-primary hover:text-white transition-colors !bg-transparent"
-                      onClick={() => toggleEdit("email")}
-                    >
-                      {isEditing.email ? "Cancel" : "Edit"}
-                    </button>
-                  </div>
-                  {isEditing.email ? (
-                    <>
-                      <input
-                        ref={emailInputRef}
-                        type="email"
-                        name="email"
-                        value={user.email}
-                        onChange={handleInputChange}
-                        className="primary-input !bg-dark-primary"
-                        placeholder="Enter your email"
-                      />
-                      {formErrors.email && (
-                        <p className="text-red-500 text-sm">
-                          {formErrors.email}
-                        </p>
-                      )}
-                    </>
-                  ) : (
-                    <div className="flex items-center space-x-2 p-4 bg-dark-primary rounded-md">
-                      <span className="text-white">{user.email}</span>
-                    </div>
-                  )}
-                </div>
-
-                {(isEditing.name || isEditing.email) && (
-                  <button
-                    className="bg-button-primary text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors w-full flex justify-center items-center gap-2"
-                    onClick={saveChanges}
-                    disabled={isLoading}
-                  >
-                    {isLoading && <FaSpinner className="animate-spin" />}
-                    Save Changes
-                  </button>
+          {/* Change Password */}
+          <div className="bg-dark-secondary rounded-lg overflow-hidden">
+            <div className="p-6 border-b border-gray-800">
+              <h2 className="text-xl font-semibold text-white">
+                Change Password
+              </h2>
+            </div>
+            <div className="p-6 space-y-4">
+              <div>
+                <label className="text-sm text-white">Old Password</label>
+                <input
+                  type="password"
+                  name="oldPassword"
+                  value={passwords.oldPassword}
+                  onChange={handlePasswordChange}
+                  className="primary-input !bg-dark-primary"
+                  placeholder="Enter old password"
+                />
+                {formErrors.oldPassword && (
+                  <p className="text-red-500 text-sm">
+                    {formErrors.oldPassword}
+                  </p>
                 )}
               </div>
+              <div>
+                <label className="text-sm text-white">New Password</label>
+                <input
+                  type="password"
+                  name="newPassword"
+                  value={passwords.newPassword}
+                  onChange={handlePasswordChange}
+                  className="primary-input !bg-dark-primary"
+                  placeholder="Enter new password"
+                />
+                {formErrors.newPassword && (
+                  <p className="text-red-500 text-sm">
+                    {formErrors.newPassword}
+                  </p>
+                )}
+              </div>
+              <div>
+                <label className="text-sm text-white">
+                  Confirm New Password
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={passwords.confirmPassword}
+                  onChange={handlePasswordChange}
+                  className="primary-input !bg-dark-primary"
+                  placeholder="Confirm new password"
+                />
+                {formErrors.confirmPassword && (
+                  <p className="text-red-500 text-sm">
+                    {formErrors.confirmPassword}
+                  </p>
+                )}
+              </div>
+              <button
+                className="bg-button-primary text-white py-2 px-4 rounded-md hover:bg-opacity-90 transition-colors w-full flex justify-center items-center gap-2"
+                onClick={saveChanges}
+                disabled={isLoading}
+              >
+                {isLoading && <FaSpinner className="animate-spin" />}
+                Save Password
+              </button>
             </div>
           </div>
         </div>
