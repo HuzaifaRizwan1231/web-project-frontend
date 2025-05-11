@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import CodeInsightLogo from "../components/Logo";
-import axios from "axios";
+import CodeInsightLogo from "./CodeInsightLogo";
 import { useSelector, useDispatch } from "react-redux";
 import { clearUser } from "../redux/features/user/userSlice"; // Import clearUser action
+import api from "../axios/axios.config";
 
 const Navbar = () => {
   const dispatch = useDispatch();
@@ -23,13 +23,7 @@ const Navbar = () => {
   const handleAuthClick = async () => {
     try {
       // Make logout API request
-      await axios.post(
-        "http://localhost:8000/auth/logout",
-        {},
-        {
-          withCredentials: true, // Send cookies (accessToken)
-        }
-      );
+      await api.post("/auth/logout");
 
       // Clear Redux user state
       dispatch(clearUser());

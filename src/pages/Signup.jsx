@@ -2,7 +2,8 @@ import React from "react";
 import { useSignUp } from "../components/signup/hooks/useSignUp";
 import InputField from "../components/ui/InputField";
 import { FaSpinner } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import CodeInsightLogo from "../components/CodeInsightLogo";
 
 const Signup = () => {
   const { formData, handleChange, handleSignUp, loading, errors } = useSignUp();
@@ -11,10 +12,12 @@ const Signup = () => {
   return (
     <>
       {/* Main Div */}
-      <div className="grid lg:grid-cols-2 h-screen bg-gray-900">
-        <div className="py-25">
+      <div className="grid lg:grid-cols-2 h-screen bg-dark-primary">
+        <div className="py-10">
           <div className="h-full flex flex-col items-center justify-center gap-5">
-            <h1 className="text-4xl font-bold text-white">Code Insight</h1>
+            <Link to={"/"}>
+              <CodeInsightLogo className="h-18 w-auto" />
+            </Link>
             <div>Other ways</div>
             <div>or use your email account</div>
 
@@ -24,7 +27,7 @@ const Signup = () => {
               onSubmit={handleSignUp}
               encType="multipart/form-data"
             >
-              <div className="flex flex-col gap-4">
+              <div className="flex flex-col gap-3">
                 <div className="">
                   <InputField
                     input={
@@ -32,7 +35,7 @@ const Signup = () => {
                         type="text"
                         name="username"
                         value={username}
-                        className="signup-input min-w-80 p-2"
+                        className="w-full bg-black rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-button-primary"
                         placeholder="Username"
                         onChange={handleChange}
                       />
@@ -47,7 +50,7 @@ const Signup = () => {
                         type="email"
                         name="email"
                         value={email}
-                        className="signup-input min-w-80"
+                        className="w-full bg-black rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-button-primary"
                         placeholder="Email"
                         onChange={handleChange}
                       />
@@ -62,7 +65,7 @@ const Signup = () => {
                         type="password"
                         name="password"
                         value={password}
-                        className="signup-input min-w-80"
+                        className="w-full bg-black rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-button-primary"
                         placeholder="Password"
                         onChange={handleChange}
                       />
@@ -77,7 +80,7 @@ const Signup = () => {
                         type="password"
                         name="confirmPassword"
                         value={confirmPassword}
-                        className="signup-input min-w-80"
+                        className="w-full bg-black rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-button-primary"
                         placeholder="Confirm Password"
                         onChange={handleChange}
                       />
@@ -91,7 +94,7 @@ const Signup = () => {
                       <input
                         type="file"
                         name="profileImage"
-                        className="signup-input cursor-pointer min-w-80"
+                        className="w-full bg-black rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-button-primary"
                         placeholder="Profile Image"
                         onChange={handleChange}
                       />
@@ -127,11 +130,19 @@ const Signup = () => {
         </div>
         {/* Cover Div */}
         <div className="cover-section flex-col px-10 py-8 font-bold text-white hidden lg:flex">
-          <h1 className="text-3xl">Code Insight</h1>
+          <Link to={"/"}>
+            <CodeInsightLogo className="h-15 w-auto" />
+          </Link>
           <div className="flex flex-col flex-1 gap-3 justify-center">
             <h1 className="text-6xl ">Program Optimally!</h1>
             <div className="text-4xl font-light">
               Write, Analyze and improve your code
+            </div>
+            <div className="mt-8 bg-white/10 backdrop-blur-sm rounded-lg p-6 max-w-md">
+              <p className="text-lg">
+                Join thousands of developers who are already using Code Insight
+                to enhance their coding skills and build better software.
+              </p>
             </div>
           </div>
           <h1 className="py-3 text-center font-medium">Links</h1>

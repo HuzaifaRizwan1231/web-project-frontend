@@ -12,6 +12,7 @@ import {
 } from "../../../redux/features/files/filesSlice";
 import { useState } from "react";
 import { extensionToLanguage } from "../../../utils/utils";
+import toast from "react-hot-toast";
 
 export const useEditor = () => {
   // states
@@ -30,7 +31,7 @@ export const useEditor = () => {
 
     // check if language is not present in extensionToLanguage (not allowed)
     if (!language) {
-      alert("Language not allowed");
+      toast.error("Language not allowed");
       setCreateFileLoading(false);
       return;
     }
@@ -39,7 +40,7 @@ export const useEditor = () => {
     const matched = files.find((f) => f.name == fileName);
 
     if (matched) {
-      alert("File already exists");
+      toast.error("File already exists");
       setCreateFileLoading(false);
       return;
     }
@@ -60,6 +61,7 @@ export const useEditor = () => {
         oldContent: response.data.content,
       };
       dispatch(setFiles([newFile, ...files]));
+      setCurrentFileId(response.data._id);
     }
 
     setCreateFileLoading(false);

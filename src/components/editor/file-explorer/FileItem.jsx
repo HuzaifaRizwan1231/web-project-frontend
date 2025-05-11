@@ -1,14 +1,19 @@
 import React from "react";
-import { FaCss3, FaHtml5, FaJava, FaJs, FaPython } from "react-icons/fa";
+import {
+  FaCss3,
+  FaHtml5,
+  FaJava,
+  FaJs,
+  FaPython,
+  FaTrash,
+} from "react-icons/fa";
 import { FaC, FaCircle, FaEllipsisVertical } from "react-icons/fa6";
 
 const icons = {
   js: <FaJs />,
   java: <FaJava />,
-  c: <FaC />,
+  cpp: <FaC />,
   py: <FaPython />,
-  html: <FaHtml5 />,
-  css: <FaCss3 />,
 };
 
 const FileItem = ({ file, isActive = false, onClick }) => {
@@ -31,7 +36,7 @@ const FileItem = ({ file, isActive = false, onClick }) => {
               <FaCircle size={10} />
             </span>
           )}
-          <FaEllipsisVertical />
+          <FaTrash />
         </div>
       </div>
     </>
