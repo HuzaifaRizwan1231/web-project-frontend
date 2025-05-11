@@ -3,13 +3,24 @@ import { FaPlus } from "react-icons/fa";
 import FileItem from "./FileItem";
 import { useSelector } from "react-redux";
 
-const FileExplorer = ({ setCurrentFileId, currentFileId }) => {
+const FileExplorer = ({
+  setCurrentFileId,
+  currentFileId,
+  createNewFile,
+  createFileLoading,
+}) => {
   const files = useSelector((state) => state.files);
   return (
     <div className="p-4 flex flex-col gap-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold">Explorer</h3>
-        <span>
+        <span
+          onClick={() => {
+            if (!createFileLoading) {
+              createNewFile("testsd1.js");
+            }
+          }}
+        >
           <FaPlus />
         </span>
       </div>

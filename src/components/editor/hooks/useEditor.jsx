@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
+  createNewFileApiCall,
   getFileContentByIdApiCall,
   getFilesApiCall,
   saveFileContentByIdApiCall,
@@ -10,22 +11,76 @@ import {
   updateFileContent,
 } from "../../../redux/features/files/filesSlice";
 import { useState } from "react";
+import { extensionToLanguage } from "../../../utils/utils";
 
 export const useEditor = () => {
   // states
   const dispatch = useDispatch();
   const [currentFileId, setCurrentFileId] = useState(null);
   const [fileContentLoading, setFileContentLoading] = useState(true);
+  const [createFileLoading, setCreateFileLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const files = useSelector((state) => state.files);
+
+  const createNewFile = async (fileName) => {
+    setCreateFileLoading(true);
+
+    const extension = fileName.split(".")[fileName.split(".").length - 1];
+    const language = extensionToLanguage[extension];
+
+    // check if language is not present in extensionToLanguage (not allowed)
+    if (!language) {
+      alert("Language not allowed");
+      setCreateFileLoading(false);
+      return;
+    }
+
+    // check if file name already exists
+    const matched = files.find((f) => f.name == fileName);
+
+    if (matched) {
+      alert("File already exists");
+      setCreateFileLoading(false);
+      return;
+    }
+
+    // api call
+    const response = await createNewFileApiCall({
+      fileName,
+      extension,
+      content: "",
+      language,
+    });
+
+    if (response.success) {
+      const newFile = {
+        ...response.data,
+        id: response.data._id,
+        saved: true,
+        oldContent: response.data.content,
+      };
+      dispatch(setFiles([newFile, ...files]));
+    }
+
+    setCreateFileLoading(false);
+  };
 
   const getFiles = async () => {
     const response = await getFilesApiCall();
 
     if (response.success) {
       dispatch(
-        setFiles(response.data.map((file) => ({ ...file, content: null })))
+        setFiles(
+          response.data.map((file) => ({
+            ...file,
+            id: file._id,
+            content: null,
+            saved: true,
+            oldContent: null,
+          }))
+        )
       );
-      setCurrentFileId(response.data[0].id);
+      setCurrentFileId(response.data[0]._id);
     } else {
       console.error(response.message);
     }
@@ -48,7 +103,10 @@ export const useEditor = () => {
 
       if (response.success) {
         dispatch(
-          updateFileContent({ id: currentFileId, content: response.data })
+          updateFileContent({
+            id: currentFileId,
+            content: response.data.content,
+          })
         );
       } else {
         console.error(response.message);
@@ -62,14 +120,18 @@ export const useEditor = () => {
     dispatch(updateFileContent({ id: currentFileId, content: value }));
   };
 
-  const handleSave = async () => {
-    const response = await saveFileContentByIdApiCall(currentFileId);
+  const handleSave = async (content) => {
+    setSaving(true);
+    const response = await saveFileContentByIdApiCall(currentFileId, {
+      content,
+    });
 
     if (response.success) {
       dispatch(saveFile({ id: currentFileId }));
     } else {
       console.error(response.message);
     }
+    setSaving(false);
   };
 
   return {
@@ -80,5 +142,8 @@ export const useEditor = () => {
     setCurrentFileId,
     handleEditorChange,
     handleSave,
+    createNewFile,
+    createFileLoading,
+    saving,
   };
 };

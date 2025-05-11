@@ -1,18 +1,9 @@
 import React, { useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
-import FileExplorer from "../components/editor/FileExplorer/FileExplorer";
+import FileExplorer from "../components/editor/file-explorer/FileExplorer";
 import { useSelector } from "react-redux";
 import { useEditor } from "../components/editor/hooks/useEditor";
-
-// languages name corresponding to extension
-const languages = {
-  js: "javascript",
-  java: "java",
-  c: "c",
-  py: "python",
-  html: "html",
-  css: "css",
-};
+import { extensionToLanguage } from "../utils/utils";
 
 const Editor = () => {
   const {
@@ -23,6 +14,9 @@ const Editor = () => {
     setCurrentFileId,
     handleEditorChange,
     handleSave,
+    createNewFile,
+    createFileLoading,
+    saving,
   } = useEditor();
 
   const files = useSelector((state) => state.files);
@@ -56,6 +50,8 @@ const Editor = () => {
     <div className="grid grid-cols-5 text-white h-screen">
       <div className="col-span-1">
         <FileExplorer
+          createFileLoading={createFileLoading}
+          createNewFile={createNewFile}
           setCurrentFileId={setCurrentFileId}
           currentFileId={currentFileId}
         />
@@ -63,9 +59,9 @@ const Editor = () => {
       <div className="col-span-3 bg-dark-secondary">
         {files && !fileContentLoading && currentFile ? (
           <MonacoEditor
-            defaultLanguage={languages[currentFile.extension]}
+            defaultLanguage={extensionToLanguage[currentFile.extension]}
             defaultValue={currentFile.content}
-            language={languages[currentFile.extension]}
+            language={extensionToLanguage[currentFile.extension]}
             value={currentFile.content}
             theme="vs-dark"
             onChange={handleEditorChange}
@@ -82,7 +78,11 @@ const Editor = () => {
           {currentFile && !currentFile.saved && (
             <button
               className="bg-blue-600 px-3 py-1 rounded hover:bg-blue-500"
-              onClick={handleSave}
+              onClick={() => {
+                if (!saving) {
+                  handleSave(currentFile.content);
+                }
+              }}
             >
               Save
             </button>
