@@ -6,6 +6,7 @@ import Signup from "./pages/Signup";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Settings from "./pages/Settings";
 import MainLayout from "./layouts/MainLayout";
+import Home from "./pages/Home";
 
 function App() {
   return (
@@ -18,7 +19,7 @@ function App() {
           <Route element={<MainLayout />}>
             {/* Protected Routes wrapper */}
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<></>} />
+              <Route path="/" element={<Home />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/editor" element={<Editor />} />
             </Route>
