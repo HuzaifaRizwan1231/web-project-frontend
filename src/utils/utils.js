@@ -9,4 +9,9 @@ export const getParsedErrors = (result) => {
 // mapping extension to language names, also acts as allowed languages
 export const extensionToLanguage = {
   js: "javascript",
+  py: "python",
+  java: "java",
+  cpp: "cpp",
+  go: "go",
+  rust: "rust",
 };

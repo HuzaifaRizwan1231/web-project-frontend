@@ -1,21 +1,24 @@
-import React, { useState } from "react";
 import { useCode } from "../hooks/useCode";
 import { FaSpinner } from "react-icons/fa";
+import { extensionToLanguage } from "../../../utils/utils.js";
 
 const CodeOutput = ({ currentFile }) => {
   const { output, runCode, loading } = useCode();
+
+  const handleRunCode = () => {
+    const languageToRun = extensionToLanguage[currentFile.extension];
+    const body = {
+      content: currentFile.content,
+      language: languageToRun,
+    };
+    runCode(body);
+  };
   return (
     <div className="px-4 pb-4 h-full flex flex-col">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-xl">Code Output</h3>
         <button
-          onClick={() => {
-            const body = {
-              content: currentFile.content,
-              language: "javascript",
-            };
-            runCode(body);
-          }}
+          onClick={handleRunCode}
           disabled={loading}
           className="bg-button-primary px-2 py-1 m-2 hover:scale-105 transition-all duration-300 ease-in-out rounded-4xl w-[72px] text-white cursor-pointer"
         >

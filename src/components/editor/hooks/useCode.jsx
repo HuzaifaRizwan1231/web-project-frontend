@@ -70,5 +70,6 @@ export const useCode = () => {
     loading,
     runCode,
     analyseCode,
+    clearAnalysis,
   };
 };
