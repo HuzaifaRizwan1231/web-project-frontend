@@ -31,10 +31,16 @@ export const filesSlice = createSlice({
       file.saved = true;
       file.oldContent = file.content;
     },
+    deleteFile: (state, action) => {
+      const id = action.payload.id;
+
+      return state.filter((f) => f.id != id);
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { setFiles, updateFileContent, saveFile } = filesSlice.actions;
+export const { setFiles, updateFileContent, saveFile, deleteFile } =
+  filesSlice.actions;
 
 export default filesSlice.reducer;

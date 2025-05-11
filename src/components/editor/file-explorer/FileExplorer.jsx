@@ -8,6 +8,7 @@ const FileExplorer = ({
   currentFileId,
   createNewFile,
   createFileLoading,
+  handleFileDelete,
 }) => {
   const [creatingFile, setCreatingFile] = useState(false);
   const [fileName, setFileName] = useState("");
@@ -86,6 +87,7 @@ const FileExplorer = ({
                   setCurrentFileId(file.id);
                 }}
                 isActive={file.id == currentFileId}
+                handleFileDelete={handleFileDelete}
               />
             ))
           : Array.from({ length: 4 }).map((_, i) => (

@@ -13,5 +13,5 @@ export const extensionToLanguage = {
   java: "java",
   cpp: "cpp",
   go: "go",
-  rust: "rust",
+  rs: "rust",
 };

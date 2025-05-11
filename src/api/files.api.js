@@ -37,3 +37,12 @@ export const createNewFileApiCall = async (body) => {
     return error.response.data;
   }
 };
+
+export const deleteFileByIdApiCall = async (id) => {
+  try {
+    const response = await api.delete(`${path}/${id}`);
+    return response.data;
+  } catch (error) {
+    return error.response.data;
+  }
+};
