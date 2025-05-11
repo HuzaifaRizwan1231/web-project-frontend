@@ -1,22 +1,31 @@
-import React, { useState } from "react";
 import { useCode } from "../hooks/useCode";
 import { FaSpinner } from "react-icons/fa";
+import toast from "react-hot-toast";
+import { extensionToLanguage } from "../../../utils/utils";
 
 const CodeAnalysis = ({ currentFile }) => {
-  const { analysis, analyseCode, loading } = useCode();
+  const { analysis, analyseCode, loading, clearAnalysis } = useCode();
+
+  const handleCodeAnalysis = () => {
+    const languageToAnalyse = extensionToLanguage[currentFile.extension];
+    if (languageToAnalyse !== "javascript") {
+      toast.error("Code analysis is only supported for JavaScript files.");
+      clearAnalysis();
+      return;
+    }
+    const body = {
+      content: currentFile.content,
+      language: languageToAnalyse,
+    };
+    analyseCode(body);
+  };
   return (
     <div className="px-4 pt-4">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-xl">Code Analysis</h3>
         <button
           disabled={loading}
-          onClick={() => {
-            const body = {
-              content: currentFile.content,
-              language: "javascript",
-            };
-            analyseCode(body);
-          }}
+          onClick={handleCodeAnalysis}
           className="bg-button-primary px-2 py-1 m-2 hover:scale-105 transition-all duration-300 ease-in-out rounded-4xl text-white cursor-pointer"
         >
           Analyse
