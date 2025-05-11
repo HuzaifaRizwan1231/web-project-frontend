@@ -1,11 +1,16 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { FaSpinner } from "react-icons/fa";
-import Header from "../components/settings/Header";
+import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { updateUser, clearUser } from "../redux/features/user/userSlice"; // Adjust path to your user slice
+import Navbar from "../components/Navbar";
 
 const Settings = () => {
-  const [user, setUser] = useState({});
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user) || {}; // Get user from Redux store
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+  const [profileImageFile, setProfileImageFile] = useState(null); // Store selected file
 
   const [passwords, setPasswords] = useState({
     oldPassword: "",
@@ -15,27 +20,16 @@ const Settings = () => {
 
   const fileInputRef = useRef(null);
 
-  // Load user from localStorage on mount
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-        console.log("User loaded from localStorage:", JSON.parse(storedUser));
-      } catch (e) {
-        console.error("Error parsing user from localStorage:", e);
-      }
-    }
-  }, []);
-
+  // Handle file selection for profile image
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setProfileImageFile(file); // Store file for API upload
       const reader = new FileReader();
       reader.onloadend = () => {
-        const updatedUser = { ...user, profileImage: reader.result };
-        setUser(updatedUser);
-        localStorage.setItem("user", JSON.stringify(updatedUser));
+        // Temporarily update UI with local image preview
+        console.log("File preview URL:", reader.result);
+        dispatch(updateUser({ profileImage: reader.result }));
       };
       reader.readAsDataURL(file);
     }
@@ -54,13 +48,15 @@ const Settings = () => {
     const errors = {};
     const { oldPassword, newPassword, confirmPassword } = passwords;
 
-    if (!oldPassword) errors.oldPassword = "Old password is required.";
-    if (!newPassword) errors.newPassword = "New password is required.";
-    else if (newPassword.length < 6)
+    if (!oldPassword && !profileImageFile) {
+      errors.oldPassword = "Old password or profile image is required.";
+    }
+    if (newPassword && newPassword.length < 6) {
       errors.newPassword = "Password must be at least 6 characters.";
-
-    if (newPassword !== confirmPassword)
+    }
+    if (newPassword !== confirmPassword) {
       errors.confirmPassword = "Passwords do not match.";
+    }
 
     return errors;
   };
@@ -75,43 +71,67 @@ const Settings = () => {
     try {
       setIsLoading(true);
       setFormErrors({});
-      const res = await mockSaveToBackend(passwords);
-      console.log("Password updated successfully:", res);
-      alert("Password updated!");
+
+      // Prepare FormData for API request
+      const formData = new FormData();
+      if (passwords.oldPassword && passwords.newPassword) {
+        formData.append("oldPassword", passwords.oldPassword);
+        formData.append("newPassword", passwords.newPassword);
+      }
+      if (profileImageFile) {
+        formData.append("profileImage", profileImageFile);
+      }
+
+      // Make API request with cookies
+      const response = await axios.put(
+        "http://localhost:8000/auth/update-user",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          withCredentials: true, // Send cookies with the request
+        }
+      );
+
+      // Update Redux store with response data
+      const updatedUser = response.data.data || response.data; // Adjust based on API response structure
+      dispatch(updateUser(updatedUser));
+
+      alert("User updated successfully!");
       setPasswords({
         oldPassword: "",
         newPassword: "",
         confirmPassword: "",
       });
+      setProfileImageFile(null); // Clear selected file
     } catch (err) {
-      if (err?.errors) {
-        setFormErrors(err.errors);
+      console.error("Error updating user:", err);
+      if (err.response?.data?.errors) {
+        setFormErrors(err.response.data.errors);
+      } else if (err.response?.status === 401) {
+        setFormErrors({
+          general: "Session expired or invalid token. Please log in again.",
+        });
+        dispatch(clearUser()); // Clear user from Redux
+        setTimeout(() => {
+          window.location.href = "/login"; // Or use react-router-dom's useNavigate
+        }, 1000);
+      } else if (err.response?.status === 400) {
+        setFormErrors({
+          general: err.response.data.message || "Invalid input",
+        });
       } else {
-        alert("An unexpected error occurred.");
+        setFormErrors({ general: "An unexpected error occurred." });
       }
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Mock backend function
-  const mockSaveToBackend = (passwords) => {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        if (passwords.oldPassword !== "correct-old-password") {
-          reject({
-            errors: { oldPassword: "Old password is incorrect." },
-          });
-        } else {
-          resolve(passwords);
-        }
-      }, 1000);
-    });
-  };
-
   return (
     <>
-      <Header />
+      <Navbar />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-3xl font-bold mb-8 text-white">Account Settings</h1>
         <div className="max-w-3xl mx-auto space-y-8">
@@ -184,6 +204,9 @@ const Settings = () => {
               </h2>
             </div>
             <div className="p-6 space-y-4">
+              {formErrors.general && (
+                <p className="text-red-500 text-sm">{formErrors.general}</p>
+              )}
               <div>
                 <label className="text-sm font-medium text-white">
                   Old Password
@@ -244,7 +267,7 @@ const Settings = () => {
                 disabled={isLoading}
               >
                 {isLoading && <FaSpinner className="animate-spin" />}
-                Save Password
+                Save Changes
               </button>
             </div>
           </div>
