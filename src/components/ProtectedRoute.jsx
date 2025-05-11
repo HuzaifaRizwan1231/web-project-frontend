@@ -13,20 +13,23 @@ const ProtectedRoute = () => {
   const dispatch = useDispatch();
 
   const getUser = async () => {
+    setLoading(true);
     const response = await getUserApiCall();
 
     if (response.success) {
-      dispatch(setUser(response.data.user));
+      dispatch(setUser(response.data));
     }
 
     setLoading(false);
   };
 
   useEffect(() => {
-    if (!user && loading) {
+    if (!user) {
       getUser();
+    } else {
+      setLoading(false);
     }
-  }, [user]);
+  }, []);
 
   if (loading) {
     return <>Authenticating...</>;

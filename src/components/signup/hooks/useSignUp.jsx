@@ -56,8 +56,8 @@ export const useSignUp = () => {
 
     const response = await signUpApiCall(data);
 
-    if (response.data?.success) {
-      dispatch(setUser(response.data.data));
+    if (response.success) {
+      dispatch(setUser(response.data));
       toast.success("Signed Up Successfully");
       navigate("/");
     } else {
