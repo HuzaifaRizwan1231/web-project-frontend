@@ -16,6 +16,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/" element={<Navbar />} />
           <Route element={<ProtectedRoute />}>
+            <Route path="/" element={<Navbar />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/editor" element={<Editor />} />
           </Route>

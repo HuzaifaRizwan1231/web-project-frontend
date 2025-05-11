@@ -11,7 +11,7 @@ const Signup = () => {
   return (
     <>
       {/* Main Div */}
-      <div className="grid lg:grid-cols-2 h-screen">
+      <div className="grid lg:grid-cols-2 h-screen bg-gray-900">
         <div className="py-25">
           <div className="h-full flex flex-col items-center justify-center gap-5">
             <h1 className="text-4xl font-bold text-white">Code Insight</h1>
