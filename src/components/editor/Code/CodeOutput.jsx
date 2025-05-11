@@ -5,7 +5,7 @@ import { FaSpinner } from "react-icons/fa";
 const CodeOutput = ({ currentFile }) => {
   const { output, runCode, loading } = useCode();
   return (
-    <div className="px-2 h-full flex flex-col">
+    <div className="px-4 pb-4 h-full flex flex-col">
       <div className="flex items-center justify-between">
         <h3 className="font-semibold text-xl">Code Output</h3>
         <button

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
-import FileExplorer from "../components/editor/FileExplorer/FileExplorer";
+import FileExplorer from "../components/editor/file-explorer/FileExplorer";
 import CodeAnalysis from "../components/editor/Code/CodeAnalysis";
 import CodeOutput from "../components/editor/Code/CodeOutput";
 import { useSelector } from "react-redux";
@@ -55,11 +55,11 @@ const Editor = () => {
   };
 
   return (
-    <div className="grid grid-cols-5 text-white h-screen">
+    <div className="grid grid-cols-5 text-white h-[calc(100vh-80px)] overflow-y-hidden">
       <div
         className={`-translate-x-${
           showLeftBar ? "0" : "full"
-        } fixed transition-transform duration-300 w-[100vw] left-0 z-10 md:-translate-x-0 md:static md:w-auto col-span-1 h-full bg-dark-secondary`}
+        } fixed transition-transform duration-300 w-[100vw] left-0 z-10 md:-translate-x-0 md:static md:w-auto col-span-1 h-full bg-dark-primary`}
       >
         <FileExplorer
           createFileLoading={createFileLoading}
@@ -88,11 +88,11 @@ const Editor = () => {
       <div
         className={`translate-x-${
           showRightBar ? "0" : "full"
-        } w-[100vw] transition-transform duration-300 fixed right-0 z-10 md:translate-x-0 md:static md:w-auto col-span-1 h-full bg-dark-secondary`}
+        } w-[100vw] transition-transform duration-300 fixed right-0 z-10 md:translate-x-0 md:static md:w-auto col-span-1 h-full bg-dark-primary overflow-y-auto`}
       >
-        <div className="flex items-center justify-between bg-gray-800 text-white px-4 py-2">
+        <div className="flex items-center justify-between  text-white px-4 py-2">
           <button
-            className={`px-3 py-1 rounded 
+            className={`bg-button-primary px-4 py-1 mt-1 hover:scale-105 transition-all duration-300 ease-in-out rounded-4xl text-white cursor-pointer
             ${
               currentFile?.saved
                 ? "bg-gray-400 cursor-not-allowed"
@@ -100,10 +100,10 @@ const Editor = () => {
             }
             text-white`}
             onClick={() => {
-                if (!saving) {
-                  handleSave(currentFile.content);
-                }
-              }}
+              if (!saving) {
+                handleSave(currentFile.content);
+              }
+            }}
             disabled={currentFile && currentFile.saved}
           >
             Save

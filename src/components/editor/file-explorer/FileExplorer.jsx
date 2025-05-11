@@ -1,4 +1,3 @@
-import React from "react";
 import { FaPlus } from "react-icons/fa";
 import FileItem from "./FileItem";
 import { useSelector } from "react-redux";
@@ -33,7 +32,7 @@ const FileExplorer = ({
         />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 overflow-y-auto">
         {files
           ? files.map((file) => (
               <FileItem
