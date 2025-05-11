@@ -1,14 +1,18 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import CodeInsightLogo from "../components/Logo";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { clearUser } from "../redux/features/user/userSlice"; // Import clearUser action
 
 const Navbar = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(true); // Always show Logout for demo
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const user = useSelector((state) => state.user); // Get user from Redux store
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const isAuthenticated = !!user; // True if user exists, false if null
 
   const pages = [
     { name: "Home", path: "/" },
@@ -16,28 +20,30 @@ const Navbar = () => {
     { name: "Settings", path: "/settings" },
   ];
 
-  const navigate = useNavigate(); // for redirecting
-  const user = JSON.parse(localStorage.getItem("user"));
-  // const user = useSelector((state) => state.user.user);
-
-  console.log("User from redux", user);
   const handleAuthClick = async () => {
     try {
+      // Make logout API request
       await axios.post(
         "http://localhost:8000/auth/logout",
-        {}, // No body needed
+        {},
         {
-          withCredentials: true, // Ensures cookies (like accessToken) are sent
+          withCredentials: true, // Send cookies (accessToken)
         }
       );
 
-      // Clear localStorage and update UI
+      // Clear Redux user state
+      dispatch(clearUser());
+
+      // Clear localStorage (if used elsewhere)
       localStorage.removeItem("user");
-      setIsAuthenticated(false);
+
+      // Update UI and redirect
       setMenuOpen(false);
       navigate("/login");
     } catch (error) {
       console.error("Logout failed:", error.response?.data || error.message);
+      // Optionally show an error message to the user
+      alert("Logout failed. Please try again.");
     }
   };
 
