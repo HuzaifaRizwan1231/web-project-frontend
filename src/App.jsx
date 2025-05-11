@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Settings from "./pages/Settings";
-import Navbar from "./components/Navbar";
+import MainLayout from "./layouts/MainLayout";
 
 function App() {
   return (
@@ -14,11 +14,14 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/" element={<Navbar />} />
-          <Route element={<ProtectedRoute />}>
-            <Route path="/" element={<Navbar />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/editor" element={<Editor />} />
+          {/* Main Layout Wrapper */}
+          <Route element={<MainLayout />}>
+            {/* Protected Routes wrapper */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="/" element={<></>} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/editor" element={<Editor />} />
+            </Route>
           </Route>
         </Routes>
       </Router>

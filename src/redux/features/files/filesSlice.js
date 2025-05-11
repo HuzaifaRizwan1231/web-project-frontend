@@ -18,6 +18,8 @@ export const filesSlice = createSlice({
       // update save status if file content was changed after initial loading
       if (file.content) {
         file.saved = file.oldContent == content;
+      } else {
+        file.oldContent = content;
       }
 
       file.content = content;

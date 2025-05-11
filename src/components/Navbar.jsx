@@ -12,9 +12,8 @@ const Navbar = () => {
 
   const pages = [
     { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
-    { name: "Services", path: "/services" },
-    { name: "Contact", path: "/contact" },
+    { name: "Editor", path: "/editor" },
+    { name: "Settings", path: "/settings" },
   ];
 
   const navigate = useNavigate(); // for redirecting
@@ -47,7 +46,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-dark-secondary text-white shadow-md">
+    <nav className="bg-dark-secondary text-white shadow-md relative">
       <div className="container mx-auto px-6 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/" className="flex items-center">

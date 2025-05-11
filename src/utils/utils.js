@@ -5,3 +5,8 @@ export const getParsedErrors = (result) => {
   });
   return fieldErrors;
 };
+
+// mapping extension to language names, also acts as allowed languages
+export const extensionToLanguage = {
+  js: "javascript",
+};
