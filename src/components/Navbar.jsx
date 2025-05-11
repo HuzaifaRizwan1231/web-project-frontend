@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import CodeInsightLogo from "../pages/Logo";
+import CodeInsightLogo from "../components/Logo";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -17,25 +17,30 @@ const Navbar = () => {
   ];
 
   const navigate = useNavigate(); // for redirecting
-  const user = useSelector((state) => state.user);
-  console.log("User from Redux:", user); // Log the user state
+  const user = JSON.parse(localStorage.getItem("user"));
+  // const user = useSelector((state) => state.user.user);
+
+  console.log("User from redux", user);
   const handleAuthClick = async () => {
     try {
       await axios.post(
         "http://localhost:8000/auth/logout",
-        { userId: user?._id },
+        {}, // No body needed
         {
-          withCredentials: true,
+          withCredentials: true, // Ensures cookies (like accessToken) are sent
         }
       );
 
+      // Clear localStorage and update UI
+      localStorage.removeItem("user");
       setIsAuthenticated(false);
       setMenuOpen(false);
-      navigate("/login"); // Redirect to login page
+      navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error);
+      console.error("Logout failed:", error.response?.data || error.message);
     }
   };
+
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };

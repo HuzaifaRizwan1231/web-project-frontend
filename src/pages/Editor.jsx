@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
-import FileExplorer from "../components/editor/file-explorer/FileExplorer";
+import FileExplorer from "../components/editor/FileExplorer/FileExplorer";
+import CodeAnalysis from "../components/editor/Code/CodeAnalysis";
+import CodeOutput from "../components/editor/Code/CodeOutput";
 import { useSelector } from "react-redux";
 import { useEditor } from "../components/editor/hooks/useEditor";
 import { extensionToLanguage } from "../utils/utils";
@@ -89,19 +91,26 @@ const Editor = () => {
         } w-[100vw] transition-transform duration-300 fixed right-0 z-10 md:translate-x-0 md:static md:w-auto col-span-1 h-full bg-dark-secondary`}
       >
         <div className="flex items-center justify-between bg-gray-800 text-white px-4 py-2">
-          {currentFile && !currentFile.saved && (
-            <button
-              className="bg-blue-600 px-3 py-1 rounded hover:bg-blue-500"
-              onClick={() => {
+          <button
+            className={`px-3 py-1 rounded 
+            ${
+              currentFile?.saved
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-900"
+            }
+            text-white`}
+            onClick={() => {
                 if (!saving) {
                   handleSave(currentFile.content);
                 }
               }}
-            >
-              Save
-            </button>
-          )}
+            disabled={currentFile && currentFile.saved}
+          >
+            Save
+          </button>
         </div>
+        <CodeAnalysis currentFile={currentFile} />
+        <CodeOutput currentFile={currentFile} />
       </div>
 
       {/* To show toggle buttons for sidebars in mobile view */}
