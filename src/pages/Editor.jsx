@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import MonacoEditor from "@monaco-editor/react";
 import FileExplorer from "../components/editor/FileExplorer/FileExplorer";
+import CodeAnalysis from "../components/editor/Code/CodeAnalysis";
+import CodeOutput from "../components/editor/Code/CodeOutput";
 import { useSelector } from "react-redux";
 import { useEditor } from "../components/editor/hooks/useEditor";
 
@@ -79,15 +81,22 @@ const Editor = () => {
       </div>
       <div className="col-span-1">
         <div className="flex items-center justify-between bg-gray-800 text-white px-4 py-2">
-          {currentFile && !currentFile.saved && (
-            <button
-              className="bg-blue-600 px-3 py-1 rounded hover:bg-blue-500"
-              onClick={handleSave}
-            >
-              Save
-            </button>
-          )}
+          <button
+            className={`px-3 py-1 rounded 
+            ${
+              currentFile?.saved
+                ? "bg-gray-400 cursor-not-allowed"
+                : "bg-blue-600 hover:bg-blue-900"
+            }
+            text-white`}
+            onClick={handleSave}
+            disabled={currentFile && currentFile.saved}
+          >
+            Save
+          </button>
         </div>
+        <CodeAnalysis currentFile={currentFile} />
+        <CodeOutput currentFile={currentFile} />
       </div>
     </div>
   );
