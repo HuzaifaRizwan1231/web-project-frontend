@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import CodeInsightLogo from "../pages/Logo";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(true); // Always show Logout for demo
@@ -14,11 +17,26 @@ const Navbar = () => {
     { name: "Contact", path: "/contact" },
   ];
 
-  const handleAuthClick = () => {
-    setIsAuthenticated(false); // Just simulates logout
-    setMenuOpen(false);
-  };
+  const navigate = useNavigate(); // for redirecting
+  const user = useSelector((state) => state.user);
+  console.log("User from Redux:", user); // Log the user state
+  const handleAuthClick = async () => {
+    try {
+      await axios.post(
+        "http://localhost:8000/auth/logout",
+        { userId: user?._id },
+        {
+          withCredentials: true,
+        }
+      );
 
+      setIsAuthenticated(false);
+      setMenuOpen(false);
+      navigate("/login"); // Redirect to login page
+    } catch (error) {
+      console.error("Logout failed:", error);
+    }
+  };
   const toggleMenu = () => {
     setMenuOpen((prev) => !prev);
   };

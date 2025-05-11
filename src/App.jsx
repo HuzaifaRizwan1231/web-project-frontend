@@ -15,8 +15,8 @@ function App() {
           <Route path="/" element={<Navbar />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/settings" element={<Settings />} />
           <Route element={<ProtectedRoute />}>
+            <Route path="/settings" element={<Settings />} />
             <Route path="/editor" element={<Editor />} />
           </Route>
         </Routes>

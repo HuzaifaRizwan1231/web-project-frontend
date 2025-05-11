@@ -43,6 +43,8 @@ export const useLogin = () => {
 
     if (response.success) {
       dispatch(setUser(response.data));
+      localStorage.setItem("user", JSON.stringify(response.data));
+
       toast.success("Logged In");
       navigate("/");
     } else {

@@ -1,14 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { FaSpinner } from "react-icons/fa";
 import Header from "../components/settings/Header";
 
 const Settings = () => {
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    profilePic: "/placeholder.svg?height=100&width=100",
-  });
-
+  const [user, setUser] = useState({});
   const [formErrors, setFormErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
@@ -20,12 +15,27 @@ const Settings = () => {
 
   const fileInputRef = useRef(null);
 
+  // Load user from localStorage on mount
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      try {
+        setUser(JSON.parse(storedUser));
+        console.log("User loaded from localStorage:", JSON.parse(storedUser));
+      } catch (e) {
+        console.error("Error parsing user from localStorage:", e);
+      }
+    }
+  }, []);
+
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setUser((prev) => ({ ...prev, profilePic: reader.result }));
+        const updatedUser = { ...user, profileImage: reader.result };
+        setUser(updatedUser);
+        localStorage.setItem("user", JSON.stringify(updatedUser));
       };
       reader.readAsDataURL(file);
     }
@@ -119,8 +129,8 @@ const Settings = () => {
               <div className="relative mb-6 group">
                 <div className="w-32 h-32 rounded-full overflow-hidden bg-white flex items-center justify-center">
                   <img
-                    src={user.profilePic}
-                    alt={user.name}
+                    src={user.profileImage || "/default-profile.png"}
+                    alt={user.username || "User"}
                     width={128}
                     height={128}
                     className="object-cover w-full h-full"
@@ -143,7 +153,7 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* Personal Info (read-only) */}
+          {/* Personal Info */}
           <div className="bg-dark-secondary rounded-lg overflow-hidden">
             <div className="p-6 border-b border-gray-800">
               <h2 className="text-xl font-semibold text-white">
@@ -154,13 +164,13 @@ const Settings = () => {
               <div>
                 <label className="text-sm font-medium text-white">Name</label>
                 <div className="p-4 bg-dark-primary rounded-md text-white">
-                  {user.name}
+                  {user.username || "N/A"}
                 </div>
               </div>
               <div>
                 <label className="text-sm font-medium text-white">Email</label>
                 <div className="p-4 bg-dark-primary rounded-md text-white">
-                  {user.email}
+                  {user.email || "N/A"}
                 </div>
               </div>
             </div>
