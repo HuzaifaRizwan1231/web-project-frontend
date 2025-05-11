@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import {
   createNewFileApiCall,
+  deleteFileByIdApiCall,
   getFileContentByIdApiCall,
   getFilesApiCall,
   saveFileContentByIdApiCall,
@@ -9,6 +10,7 @@ import {
   saveFile,
   setFiles,
   updateFileContent,
+  deleteFile,
 } from "../../../redux/features/files/filesSlice";
 import { useState } from "react";
 import { extensionToLanguage } from "../../../utils/utils";
@@ -136,6 +138,26 @@ export const useEditor = () => {
     setSaving(false);
   };
 
+  const handleFileDelete = async (id) => {
+    setCreateFileLoading(true);
+    const response = await deleteFileByIdApiCall(id);
+    console.log(response);
+    if (response.success) {
+      dispatch(deleteFile({ id }));
+      const updatedFiles = files.filter((file) => file.id !== id);
+
+      if (updatedFiles.length > 0) {
+        setCurrentFileId(updatedFiles[0].id);
+      } else {
+        setCurrentFileId(null);
+      }
+      setCreateFileLoading(false);
+    } else {
+      console.error(response.message);
+      setCreateFileLoading(false);
+    }
+  };
+
   return {
     getFiles,
     currentFileId,
@@ -147,5 +169,6 @@ export const useEditor = () => {
     createNewFile,
     createFileLoading,
     saving,
+    handleFileDelete,
   };
 };

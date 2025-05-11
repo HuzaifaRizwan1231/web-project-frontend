@@ -16,8 +16,8 @@ const icons = {
   py: <FaPython />,
 };
 
-const FileItem = ({ file, isActive = false, onClick }) => {
-  const { name, extension } = file;
+const FileItem = ({ file, isActive = false, onClick, handleFileDelete }) => {
+  const { id, name, extension } = file;
   return (
     <>
       <div
@@ -36,7 +36,7 @@ const FileItem = ({ file, isActive = false, onClick }) => {
               <FaCircle size={10} />
             </span>
           )}
-          <FaTrash />
+          <FaTrash onClick={() => handleFileDelete(id)} />
         </div>
       </div>
     </>

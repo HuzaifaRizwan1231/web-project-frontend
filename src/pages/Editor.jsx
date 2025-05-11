@@ -21,6 +21,7 @@ const Editor = () => {
     createNewFile,
     createFileLoading,
     saving,
+    handleFileDelete,
   } = useEditor();
 
   // states to manage sidebars in mobile view
@@ -66,6 +67,7 @@ const Editor = () => {
           createNewFile={createNewFile}
           setCurrentFileId={setCurrentFileId}
           currentFileId={currentFileId}
+          handleFileDelete={handleFileDelete}
         />
       </div>
       <div className="col-span-5 md:col-span-3 bg-dark-secondary py-5">
