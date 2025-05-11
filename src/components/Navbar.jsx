@@ -68,7 +68,7 @@ const Navbar = () => {
         </ul>
 
         {/* Auth Button Desktop */}
-        {isAuthenticated && (
+        {isAuthenticated ? (
           <div
             className="hidden md:flex items-center space-x-4 text-dark-tertiary hover:text-red-500 transition-colors rounded-xs cursor-pointer"
             onClick={handleAuthClick}
@@ -91,6 +91,15 @@ const Navbar = () => {
             </svg>
             <span>Sign Out</span>
           </div>
+        ) : (
+          <>
+            <Link
+              className="bg-button-primary px-4 py-1 mt-1 hover:scale-105 transition-all duration-300 ease-in-out rounded-4xl text-white cursor-pointer"
+              to="/login"
+            >
+              Login
+            </Link>
+          </>
         )}
 
         {/* Hamburger Menu */}

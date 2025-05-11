@@ -4,6 +4,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { updateUser, clearUser } from "../redux/features/user/userSlice"; // Adjust path to your user slice
 import Navbar from "../components/Navbar";
+import toast from "react-hot-toast";
 
 const Settings = () => {
   const dispatch = useDispatch();
@@ -98,7 +99,7 @@ const Settings = () => {
       const updatedUser = response.data.data || response.data; // Adjust based on API response structure
       dispatch(updateUser(updatedUser));
 
-      alert("User updated successfully!");
+      toast.success("User updated successfully!");
       setPasswords({
         oldPassword: "",
         newPassword: "",
@@ -131,7 +132,6 @@ const Settings = () => {
 
   return (
     <>
-      <Navbar />
       <div className="container mx-auto py-8 px-4">
         <h1 className="text-3xl font-bold mb-8 text-white">Account Settings</h1>
         <div className="max-w-3xl mx-auto space-y-8">

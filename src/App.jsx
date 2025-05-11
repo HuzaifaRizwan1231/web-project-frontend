@@ -18,8 +18,8 @@ function App() {
           {/* Main Layout Wrapper */}
           <Route element={<MainLayout />}>
             {/* Protected Routes wrapper */}
+            <Route path="/" element={<Home />} />
             <Route element={<ProtectedRoute />}>
-              <Route path="/" element={<Home />} />
               <Route path="/settings" element={<Settings />} />
               <Route path="/editor" element={<Editor />} />
             </Route>
