@@ -58,8 +58,8 @@ const Editor = () => {
   return (
     <div className="grid grid-cols-5 text-white h-[calc(100vh-80px)] overflow-y-hidden">
       <div
-        className={`-translate-x-${
-          showLeftBar ? "0" : "full"
+        className={`${
+          showLeftBar ? "-translate-x-0" : "-translate-x-full"
         } fixed transition-transform duration-300 w-[100vw] left-0 z-10 md:-translate-x-0 md:static md:w-auto col-span-1 h-full bg-dark-primary`}
       >
         <FileExplorer
@@ -88,8 +88,8 @@ const Editor = () => {
         )}
       </div>
       <div
-        className={`translate-x-${
-          showRightBar ? "0" : "full"
+        className={`${
+          showRightBar ? "translate-x-0" : "translate-x-full"
         } w-[100vw] transition-transform duration-300 fixed right-0 z-10 md:translate-x-0 md:static md:w-auto col-span-1 h-full bg-dark-primary overflow-y-auto`}
       >
         <div className="flex items-center justify-between  text-white px-4 py-2">
