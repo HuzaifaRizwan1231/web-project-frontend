@@ -175,7 +175,9 @@ const Settings = () => {
             </div>
             <div className="p-6 space-y-4">
               <div>
-                <label className="text-sm text-white">Old Password</label>
+                <label className="text-sm font-medium text-white">
+                  Old Password
+                </label>
                 <input
                   type="password"
                   name="oldPassword"
@@ -191,7 +193,9 @@ const Settings = () => {
                 )}
               </div>
               <div>
-                <label className="text-sm text-white">New Password</label>
+                <label className="text-sm font-medium text-white">
+                  New Password
+                </label>
                 <input
                   type="password"
                   name="newPassword"
@@ -207,7 +211,7 @@ const Settings = () => {
                 )}
               </div>
               <div>
-                <label className="text-sm text-white">
+                <label className="text-sm font-medium text-white">
                   Confirm New Password
                 </label>
                 <input

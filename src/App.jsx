@@ -5,7 +5,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Settings from "./pages/Settings";
-import Navbar from "./pages/Navbar";
+import Navbar from "./components/Navbar";
 
 function App() {
   return (
